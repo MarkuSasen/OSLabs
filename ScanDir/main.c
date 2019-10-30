@@ -7,8 +7,12 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <pwd.h>
 
-
+#define ANSI_COLOR_RED "\x1b[31m"
+#define ANSI_COLOR_RESET "\x1b[0m"
+#define ANSI_COLOR_BLUE "\x1b[34m"
+#define ANSI_COLOR_YELLOW "\x1b[33m"
 
 enum PERM {
 	r,
@@ -38,7 +42,7 @@ int main(){
 
 		else	printf("err : %d\n",errno);
 		
-		if((filestat.st_mode & S_IFMT) != S_IFREG){
+		if(!(filestat.st_mode & (S_IFMT | S_IFDIR))){
 			free(scanned[n]);
 			continue;
 		}
@@ -78,9 +82,18 @@ int main(){
 
 		char *mtime =  ctime(&filestat.st_ctime);
 		*strrchr(mtime,'\n') = ' ';	
-	
-		printf("%s %u %s %s\n", permissions, filestat.st_uid, mtime, scanned[n]->d_name);
 		
+		struct passwd *pwd;
+		pwd = getpwuid(filestat.st_uid);
+		char *isdir = (char*) malloc(255*sizeof(char));
+		memset(isdir,'\0',sizeof(char));
+		strcat((char*)isdir,((filestat.st_mode & S_IFDIR) ? ANSI_COLOR_BLUE 
+		:
+		 (permissions[2] == 'x' || permissions[6] == 'x' || permissions[10] == 'x') ? ANSI_COLOR_RED 
+		:
+		ANSI_COLOR_YELLOW));
+		
+		printf("%s %s %s %s" ANSI_COLOR_RESET "\n", permissions, pwd ? pwd -> pw_name : "" , mtime, strcat((char*)isdir,scanned[n]->d_name));
 //		printf("%s ", scanned[n]->d_name);
 	
 		

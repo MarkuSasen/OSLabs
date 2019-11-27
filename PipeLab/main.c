@@ -5,7 +5,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <stdlib.h>
-//#include <signal.h>
+#include <time.h>
+#include <signal.h>
 
 int main(){
 	
@@ -21,42 +22,81 @@ int main(){
 	
 	pid = fork();
 
+
+		struct timespec ts;
+
+		struct tm *tt;
+
 	switch(pid)
 	{
 		case -1:
 			perror("fork error\n"); return 1;
 		case 0:
 		{
-			char buf[1024]; int writ = 0, len = 0;
-			memset(buf,'*',1023); buf[1023] = '\0';
+			char buf[30]; char milis[10]; int len = 0;
+			timespec_get(&ts, TIME_UTC);
+			tt = localtime(&ts.tv_sec);
+			
+			strftime(buf, sizeof(buf), "%T", tt);
+			sprintf(buf, "%s.%ld", buf, ts.tv_nsec / 1000000);
+	
+				
+			
+			len = write(fd[1],buf,30);
+			
+			memset(buf,'\0',30);
+				
+			
+			if(len > 0)
+			{
+				printf("Children await\n");
+				kill(getpid(),SIGSTOP); 
+			}
 
+			
+			len = read(fd[0], buf, 30);
+			if(len > 0)	
+				printf("PARENT TIME: %s\n", buf);
+			else perror("No response from parent\n");
+	
+			close(fd[1]);
 			close(fd[0]);
 
-			writ = write(fd[1], buf, 1024);
-			
-			printf("written %d chars with error %d\n",writ, errno);
-//			kill(getpid(),9);
-			close(fd[1]);
 			exit(0);
 		}
 		default:
 		{
-			int red = 0, len = 0;
-			char buf[1024];
-			int status;
-			close(fd[1]);
-			waitpid(pid,&status,0);
-			if(WIFEXITED(status))
-			{
-				while((len = read(fd[0],buf,1024)) > 0)
-					red += len;
+			int len = 0;
+			char buf[30];
+			
 				
-				buf[10] = '\0';	
-				printf("reaadden \"%s\" string %d chars with error %d\n",buf,red,errno);
-			} else 
-				perror("Child terminated with errors");
+			len = read(fd[0],buf,30);
+
+		if(len > 0)					
+			printf("CHILD TIME: %s\n", buf);
+		else perror("No response from children\n");
+
+			memset(buf,'\0',30);
+				sleep(1);
+	
+				timespec_get(&ts, TIME_UTC);
+
+				tt = localtime(&ts.tv_sec);
+
+				
+			strftime(buf, sizeof(buf), "%T", tt);
+			sprintf(buf, "%s.%ld", buf, ts.tv_nsec / 1000000);
+				
+				len = write(fd[1],buf,30);
+				printf("Writing... \n");
+			
+			sleep(1);	
+			kill(pid, SIGCONT); 
+	
 
 			close(fd[0]);
+			close(fd[1]);
+			printf("Closing p\n");
 			exit(0);
 		}
 	}

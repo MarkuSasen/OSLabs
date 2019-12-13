@@ -22,9 +22,6 @@ int main(){
 	
 	pid = fork();
 
-
-		struct timespec ts;
-
 		struct tm *tt;
 
 	switch(pid)
@@ -34,11 +31,11 @@ int main(){
 		case 0:
 		{
 			char buf[30]; char milis[10]; int len = 0;
-			timespec_get(&ts, TIME_UTC);
-			tt = localtime(&ts.tv_sec);
+			time_t ts = time(NULL);
+			tt = localtime(&ts);
 			
 			strftime(buf, sizeof(buf), "%T", tt);
-			sprintf(buf, "%s.%ld", buf, ts.tv_nsec / 1000000);
+			sprintf(buf, "%s", buf);
 	
 				
 			
@@ -79,13 +76,13 @@ int main(){
 			memset(buf,'\0',30);
 				sleep(1);
 	
-				timespec_get(&ts, TIME_UTC);
+				time_t ts = time(NULL);
 
-				tt = localtime(&ts.tv_sec);
+				tt = localtime(&ts);
 
 				
 			strftime(buf, sizeof(buf), "%T", tt);
-			sprintf(buf, "%s.%ld", buf, ts.tv_nsec / 1000000);
+			sprintf(buf, "%s", buf);
 				
 				len = write(fd[1],buf,30);
 				printf("Writing... \n");

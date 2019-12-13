@@ -28,8 +28,6 @@ int main(){
 	pid = fork();
 
 
-		struct timespec ts;
-
 		struct tm *tt;
 
 	switch(pid)
@@ -39,11 +37,11 @@ int main(){
 		case 0:
 		{
 			char buf[30]; int len = 0;
-			timespec_get(&ts, TIME_UTC);
-			tt = localtime(&ts.tv_sec);
+			time_t tmt = time(NULL);
+			tt = localtime(&tmt);
 			
 			strftime(buf, sizeof(buf), "%T", tt);
-			sprintf(buf, "%s.%ld", buf, ts.tv_nsec / 1000000);
+			sprintf(buf, "%s", buf);
 	
 
 			fd = open(fifo, O_WRONLY);			
@@ -88,13 +86,13 @@ int main(){
 	
 			close(fd);
 		
-				timespec_get(&ts, TIME_UTC);
-
-				tt = localtime(&ts.tv_sec);
+            
+                time_t tmt = time(NULL);
+                tt = localtime(&tmt);
 
 				
 			strftime(buf, sizeof(buf), "%T", tt);
-			sprintf(buf, "%s.%ld", buf, ts.tv_nsec / 1000000);
+			sprintf(buf, "%s", buf);
 	
 			sleep(1);	
 			kill(pid, SIGCONT); 
@@ -103,8 +101,6 @@ int main(){
 			
 				len = write(fd,buf,30);
 				printf("Writing... \n");
-			
-
 	
 				close(fd);
 

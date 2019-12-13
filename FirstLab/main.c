@@ -40,7 +40,7 @@ int main()
 	int stat;	
 
 	on_exit(pid_exiting,NULL);
-	atexit(pidat_exit);
+	on_exit(pidat_exit,NULL);
 	pid = fork();
 	
 	switch(pid)
@@ -63,13 +63,13 @@ int main()
 				printf("waitting for %d\n",pid);
 				pid = waitpid(pid, &stat, 0);
 			
-				printf("Finally, my second child died. I am [%d] and I was pleased to see [%d] agony\n",getpid(), pid);
+				printf("Finally, my second child died. I am [%d] and child was [%d]\n",getpid(), pid);
 			} 
 
 			else if(pid == -1)
 				printf("err %s\n", strerror(errno));			
 			else {
-				atexit(pidat_exitchild);
+				on_exit(pidat_exitchild, NULL);
 				return 0;
 				}
 	}
@@ -82,14 +82,14 @@ int main()
 //	int a = 5/zero;
 
 	pid = fork();
-	if(!pid) atexit(pidat_exitchild);
+	if(!pid) on_exit(pidat_exitchild, NULL);
 	
 
 	switch(pid)
 	{
 		case -1 : exit(1);
 		case 0 : printf("<%d>, parent is [%d], dividing by a zero...\n",getpid(),getppid());
-		atexit(pidat_exit);
+		on_exit(pidat_exit, NULL);
 		on_exit(child_pid_exiting,NULL);
 		int yes = -1 / zero;
 		break;
@@ -100,9 +100,6 @@ int main()
 			break;
 
 	}
-
-
-
 
 	return 0;
 }

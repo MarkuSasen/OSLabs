@@ -57,22 +57,21 @@ int main(int argc, char*argv[])
         }
 
 
-        int i = 0;
+        
         char buffer[30];
-        while(i < 25 || buffer[0] == '\0')
+        while(1)
         {
-                //if(*((char*) shmaddr) != '\0')
-                //{
-                        
+                if(*((char*) shmaddr) != '\0')
+                {        
                         memccpy(buffer, (char*) shmaddr, '\0', 30);
                          
                         memset((char*) shmaddr, '\0', 30);
 
                         printf("%s\n mypid : %d\n", buffer, getpid());
-                //}
+                }
 
 //                printf("waiting for se\n");
-                i++;
+                
                 sleep(3);
         }
 

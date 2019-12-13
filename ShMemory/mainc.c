@@ -32,7 +32,7 @@ int main(int argc, char*argv[])
         int id = shmget(key,1024,0);  
         void* shmaddr = shmat(id, NULL, SHM_RND);
 
-        if(-1 == ((int*) shmaddr))
+        if(-1 == shmaddr)
         {
                 switch(errno)
                 {

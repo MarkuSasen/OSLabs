@@ -91,7 +91,7 @@ if(-1 == id)
         //Подстыковываемся к существующей памяти
         void* shmaddr = shmat(id, NULL, SHM_RND);
 
-        if(-1 == ((int*) shmaddr))
+        if(-1 == shmaddr)
         {
                 switch(errno)
                 {
@@ -128,7 +128,7 @@ if(-1 == id)
                                 " [Size of segment] <%ld> \n" \
                                 "[key #] <%d> | [count of attaches] <%d> |\n" ,
                                 getpid(), shmcurrentinfo.shm_lpid,
-                                shmcurrentinfo.shm_segsz,  shmcurrentinfo.shm_perm.__key,
+                                shmcurrentinfo.shm_segsz,  shmcurrentinfo.shm_perm._key,
                                 shmcurrentinfo.shm_nattch);
         
                 size_t shsize = shmcurrentinfo.shm_segsz;

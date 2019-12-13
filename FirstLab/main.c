@@ -39,8 +39,8 @@ int main()
 	pid_t pid;
 	int stat;	
 
-	on_exit(pid_exiting,NULL);
-	on_exit(pidat_exit,NULL);
+	atexit(pid_exiting);
+	atexit(pidat_exit);
 	pid = fork();
 	
 	switch(pid)
@@ -49,7 +49,7 @@ int main()
 		case -1 : exit(1);
 
 		case 0 : printf("I am %d and %d is my parent\n",getpid(),getppid());
-			on_exit(child_pid_exiting,NULL);
+			atexit(child_pid_exiting);
 			return 0;
 		default : 
 			printf("I am the first Procces! %d. When my first child [%d] will die, I ll continiue my work\n ",getpid(), pid);
@@ -69,7 +69,7 @@ int main()
 			else if(pid == -1)
 				printf("err %s\n", strerror(errno));			
 			else {
-				on_exit(pidat_exitchild, NULL);
+				atexit(pidat_exitchild);
 				return 0;
 				}
 	}
@@ -82,15 +82,15 @@ int main()
 //	int a = 5/zero;
 
 	pid = fork();
-	if(!pid) on_exit(pidat_exitchild, NULL);
+	if(!pid) atexit(pidat_exitchild);
 	
 
 	switch(pid)
 	{
 		case -1 : exit(1);
 		case 0 : printf("<%d>, parent is [%d], dividing by a zero...\n",getpid(),getppid());
-		on_exit(pidat_exit, NULL);
-		on_exit(child_pid_exiting,NULL);
+		atexit(pidat_exit);
+		atexit(child_pid_exiting);
 		int yes = -1 / zero;
 		break;
 		

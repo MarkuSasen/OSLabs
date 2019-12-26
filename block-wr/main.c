@@ -98,7 +98,7 @@ void* reader(void *buf){
         
         while(1){
                 
-                pthread_rwlock_wrlock(&wlock);
+                pthread_rwlock_rdlock(&wlock);
                 
                 printf("RDLOCK RELEASED: %s \t TID: %lld\n", (char*) buf, pthread_self());
         

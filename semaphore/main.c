@@ -52,7 +52,7 @@ int main(int argc, char* argv[]){
         //Создаем Разделяемую память
         id = shmget(key, 1024, IPC_CREAT | IPC_EXCL | 0660);
         
-        if(errno == EEXIST)
+        if(-1 == id && errno == EEXIST)
         {
                 id = shmget(key, 1024, 0);
         }

@@ -48,8 +48,14 @@ int main(int argc, char* argv[]){
                 perror("!ftok");
                 return 1;
         }
+
         //Создаем Разделяемую память
-        id = shmget(key, 1024, IPC_CREAT | 0660);
+        id = shmget(key, 1024, IPC_CREAT | IPC_EXCL | 0660);
+        
+        if(errno == EEXIST)
+        {
+                id = shmget(key, 1024, 0);
+        }
 
 if(-1 == id)
         switch(errno)

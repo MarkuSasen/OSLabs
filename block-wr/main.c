@@ -81,7 +81,7 @@ void* writer(void *buf)
         while(1)
         {
 
-               pthread_rwlock_rdlock(&wlock);
+               pthread_rwlock_wrlock(&wlock);
                
                printf("WRLOCK RELEASED: WTID: %lld, inc: %d\n", pthread_self(), inc);
                if(snprintf((char*)buf,10,"%d",inc++) <= 0)
@@ -98,7 +98,7 @@ void* reader(void *buf){
         
         while(1){
                 
-                pthread_rwlock_rdlock(&wlock);
+                pthread_rwlock_wlock(&wlock);
                 
                 printf("RDLOCK RELEASED: %s \t TID: %lld\n", (char*) buf, pthread_self());
         

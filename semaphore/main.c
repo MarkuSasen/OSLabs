@@ -15,8 +15,8 @@
 #include <semaphore.h>
 
 #include "def.h"
-#define SHMNAME "shared_memory"
-#define SHMID 1234
+//#define SHMNAME "shared_memory"
+//#define SHMID 1234
 static int id = -1;
 
 static void closeall()
@@ -36,8 +36,8 @@ const char* formstring(char *, size_t);
 ////////////// SERVER
 int main(int argc, char* argv[]){
 
-//        if(!atexit(closeall))
-//                printf("atexit created\n"); 
+        if(!atexit(closeall))
+                printf("atexit created\n"); 
 
         //Создали ключ
         key_t key = ftok(SHMF, SHMID);
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
                 return 1;
         }
         //Создаем Разделяемую память
-        id = shmget(key, 1024, IPC_CREAT | IPC_EXCL | 0660);
+        id = shmget(key, 1024, IPC_CREAT | 0660);
 
 if(-1 == id)
         switch(errno)
@@ -130,9 +130,9 @@ if(-1 == id)
 //                printf("SHM INFO:\n | [MyPid ~ Last shmat PID] <%d ~ %d> | " \
                                 " [Size of segment] <%ld> \n" \
                                 "[key #] <%d> | [count of attaches] <%d> |\n" ,
-  //                              getpid(), shmcurrentinfo.shm_lpid,
-    //                            shmcurrentinfo.shm_segsz,  shmcurrentinfo.shm_perm.__key,
-      //                          shmcurrentinfo.shm_nattch);
+                        //        getpid(), shmcurrentinfo.shm_lpid,
+                      //      shmcurrentinfo.shm_segsz,  shmcurrentinfo.shm_perm.__key,
+                        //        shmcurrentinfo.shm_nattch);
         
                 size_t shsize = shmcurrentinfo.shm_segsz;
                 
@@ -154,7 +154,7 @@ if(-1 == id)
 
                 
                 sem_t *sema
-                        = sem_open("/saaaas", O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IWOTH | S_IROTH, 1);
+                        = sem_open(SEMNAME, O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IWOTH | S_IROTH, 1);
 
                 if(sema == SEM_FAILED)
                 {
@@ -193,7 +193,7 @@ if(-1 == id)
         shmctl(id, IPC_RMID, &shmds);
 
         sem_close(sema);
-        sem_unlink("/semensemenich");
+        sem_unlink(SEMNAME);
         
         return EXIT_SUCCESS;
 }

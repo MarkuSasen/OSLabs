@@ -1,1 +1,3 @@
-#define SHMF "shmf"
+#define SHMF "shmolala"
+#define SHMID 123456
+#define SEMNAME "/sss"

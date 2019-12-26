@@ -16,8 +16,8 @@
 
 #include "def.h"
 
-#define SHMNAME "shared_memory"
-#define SHMID 1234
+//#define SHMNAME "shared_memory"
+//#define SHMID 1234
 
 
 
@@ -64,7 +64,7 @@ int main(int argc, char*argv[])
         
         char buffer[30];
 
-        sem_t *sema = sem_open("/semich", 0);
+        sem_t *sema = sem_open(SEMNAME, 0);
 
         if(sema == SEM_FAILED)
         {

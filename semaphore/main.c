@@ -39,8 +39,6 @@ int main(int argc, char* argv[]){
         if(!atexit(closeall))
                 printf("atexit created\n"); 
 
-        sem_unlink(SEMNAME);
-
         //Создали ключ
         key_t key = ftok(SHMF, SHMID);
 
@@ -163,14 +161,22 @@ if(-1 == id)
                 
                 sem_t *sema
                         = sem_open(SEMNAME, O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IWOTH | S_IROTH, 1);
+                
+
 
                 if(sema == SEM_FAILED)
                 {
+                        if(errno == EEXIST)
+                        {
+                 sema
+                        = sem_open(SEMNAME, 0, 1);                               
+                        }else{
                         perror("SEM_FAILED ");
                         struct shmid_ds shmds;
                         shmdt(shmaddr);
                         shmctl(id, IPC_RMID, &shmds);
                         return EXIT_FAILURE;
+                        }
                 }
                 
 

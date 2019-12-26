@@ -39,6 +39,8 @@ int main(int argc, char* argv[]){
         if(!atexit(closeall))
                 printf("atexit created\n"); 
 
+        sem_unlink(SEMNAME);
+
         //Создали ключ
         key_t key = ftok(SHMF, SHMID);
 

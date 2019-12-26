@@ -26,8 +26,6 @@ static void closeall()
                 struct shmid_ds shmds;
                 
                 shmctl(id, IPC_RMID, &shmds);
-                sem_unlink("/semich");
-
                 printf("atexit\n");
         }
 
@@ -129,12 +127,12 @@ if(-1 == id)
 
                 shmctl(id, IPC_STAT, &shmcurrentinfo);
 
-                printf("SHM INFO:\n | [MyPid ~ Last shmat PID] <%d ~ %d> | " \
+//                printf("SHM INFO:\n | [MyPid ~ Last shmat PID] <%d ~ %d> | " \
                                 " [Size of segment] <%ld> \n" \
                                 "[key #] <%d> | [count of attaches] <%d> |\n" ,
-                                getpid(), shmcurrentinfo.shm_lpid,
-                                shmcurrentinfo.shm_segsz,  shmcurrentinfo.shm_perm.__key,
-                                shmcurrentinfo.shm_nattch);
+  //                              getpid(), shmcurrentinfo.shm_lpid,
+    //                            shmcurrentinfo.shm_segsz,  shmcurrentinfo.shm_perm.__key,
+      //                          shmcurrentinfo.shm_nattch);
         
                 size_t shsize = shmcurrentinfo.shm_segsz;
                 
@@ -156,7 +154,7 @@ if(-1 == id)
 
                 
                 sem_t *sema
-                        = sem_open("/semich", O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IWOTH | S_IROTH, 1);
+                        = sem_open("/saaaas", O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IWOTH | S_IROTH, 1);
 
                 if(sema == SEM_FAILED)
                 {
@@ -164,8 +162,6 @@ if(-1 == id)
                         struct shmid_ds shmds;
                         shmdt(shmaddr);
                         shmctl(id, IPC_RMID, &shmds);
-                
-                        sem_unlink("/semich");
                         return EXIT_FAILURE;
                 }
                 
@@ -197,7 +193,7 @@ if(-1 == id)
         shmctl(id, IPC_RMID, &shmds);
 
         sem_close(sema);
-        sem_unlink("/semich");
+        sem_unlink("/semensemenich");
         
         return EXIT_SUCCESS;
 }
